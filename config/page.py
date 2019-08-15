@@ -73,11 +73,12 @@ class PageConfig:
                             print(e)
                 replace_parts = indexer_config['replace-parts']
                 prepend = indexer_config['prepend']
+                append = indexer_config['append']
                 values_regexps = {}
                 for item, regex in indexer_config['values-regexps'].items():
                     values_regexps[item] = re.compile(regex)
                 self.indexer_config = PageIndexerConfig(indexer_enabled, replace_parts,
-                                                        values_regexps, prepend, indexing_paths, indexing_urls)
+                                                        values_regexps, prepend, append, indexing_paths, indexing_urls)
 
                 extractor_config = config['extractor']
                 items = {}
@@ -91,10 +92,11 @@ class PageConfig:
                         print(e)
                 replace_parts = extractor_config['replace-parts']
                 prepend = extractor_config['prepend']
+                append = extractor_config['append']
                 values_regexps = {}
                 for item, regex in extractor_config['values-regexps'].items():
                     values_regexps[item] = re.compile(regex)
-                self.extractor_config = PageExtractorConfig(replace_parts, values_regexps, prepend, items)
+                self.extractor_config = PageExtractorConfig(replace_parts, values_regexps, prepend, append, items)
             except Exception as e:
                 print("config error - " + self.id )
                 traceback.print_exc()
@@ -137,11 +139,12 @@ class LoginConfig:
 
 class PageIndexerConfig:
 
-    def __init__(self, enabled, replace_parts, values_regexps, prepend, paths, urls):
+    def __init__(self, enabled, replace_parts, values_regexps, prepend, append, paths, urls):
         self.enabled = enabled
         self.replace_parts = replace_parts
         self.values_regexps = values_regexps
         self.prepend = prepend
+        self.append = append
         self.paths = paths
         self.urls = urls
 
@@ -160,16 +163,20 @@ class PageIndexerConfig:
     def get_prepend(self):
         return self.prepend
 
+    def get_append(self):
+        return self.append
+
     def get_values_regexps(self):
         return self.values_regexps
 
 
 class PageExtractorConfig:
 
-    def __init__(self, replace_parts, values_regexps, prepend, items):
+    def __init__(self, replace_parts, values_regexps, prepend, append, items):
         self.replace_parts = replace_parts
         self.values_regexps = values_regexps
         self.prepend = prepend
+        self.append = append
         self.items = items
 
     def get_items(self):
@@ -177,6 +184,9 @@ class PageExtractorConfig:
 
     def get_prepend(self):
         return self.prepend
+
+    def get_append(self):
+        return self.append
 
     def get_replace_parts(self):
         return self.replace_parts

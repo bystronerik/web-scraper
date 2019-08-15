@@ -1,5 +1,6 @@
 .idea/
 venv/
 configcreator/
+converter/
 chromedriver.exe
 googlescraper.py

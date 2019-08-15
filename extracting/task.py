@@ -99,6 +99,7 @@ class ExtractingTask:
 
     def process_text(self, key, text):
         if text is not None:
+            text = self.add_append(key, text)
             text = self.add_prepend(key, text)
             text = self.search_for_value(key, text)
             text = self.replace_parts(key, text)
@@ -109,6 +110,11 @@ class ExtractingTask:
     def add_prepend(self, key, text):
         if key in self.page.get_extractor().get_prepend():
             return self.page.get_extractor().get_prepend()[key] + text
+        return text
+
+    def add_append(self, key, text):
+        if key in self.page.get_extractor().get_append():
+            return self.page.get_extractor().get_append()[key] + text
         return text
 
     def search_for_value(self, key, text):
