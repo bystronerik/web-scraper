@@ -114,7 +114,7 @@ class ExtractingTask:
 
     def add_append(self, key, text):
         if key in self.page.get_extractor().get_append():
-            return self.page.get_extractor().get_append()[key] + text
+            return text + self.page.get_extractor().get_append()[key]
         return text
 
     def search_for_value(self, key, text):
