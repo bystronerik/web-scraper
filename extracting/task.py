@@ -56,6 +56,9 @@ class ExtractingTask:
                 SubElement(xml, data['xml-tag'])
                 return
 
+            if isinstance(result, bool):
+                result = str(result)
+
             if isinstance(result, list):
                 if len(result) == 0:
                     SubElement(xml, data['xml-tag'])

@@ -3,6 +3,8 @@ import re
 import sys
 import traceback
 
+from urllib import parse as urllib_parse
+
 from scraper import cookies
 from lxml.etree import XPath
 
@@ -27,7 +29,8 @@ class PageConfig:
             try:
                 config = json.load(fd)
 
-                self.google_search_query = config['google-search-query']
+                if 'google-search-query' in config:
+                    self.google_search_query = config['google-search-query']
 
                 self.cookie_jar = cookies.cookiejar.LWPCookieJar()
 
@@ -48,6 +51,18 @@ class PageConfig:
                         with open(file, 'r', encoding="utf-8") as fd:
                             urls = json.load(fd)
                             indexing_urls.extend(urls['urls'])
+
+                completed_indexing_urls = list()
+                if len(indexer_config["url-pattern"]) != 0:
+                    for url in indexing_urls:
+                        if isinstance(url, dict):
+                            replaced_url = indexer_config["url-pattern"]
+                            for key, value in url.items():
+                                replaced_url = replaced_url.replace("{" + key + "}", urllib_parse.quote_plus(value))
+                            completed_indexing_urls.append(replaced_url)
+                        else:
+                            completed_indexing_urls.append(url)
+                indexing_urls = completed_indexing_urls
 
                 indexing_paths = {}
                 if indexer_enabled:
