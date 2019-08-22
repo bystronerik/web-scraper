@@ -2,11 +2,11 @@ import json
 import re
 import sys
 import traceback
-
 from urllib import parse as urllib_parse
 
-from scraper import cookies
 from lxml.etree import XPath
+
+from scraper import cookies
 
 
 class PageConfig:
@@ -48,8 +48,8 @@ class PageConfig:
                     for file in indexer_config['urls-files']:
                         if file[0] == ".":
                             file = file.replace(".", str(sys.path[0]), 1)
-                        with open(file, 'r', encoding="utf-8") as fd:
-                            urls = json.load(fd)
+                        with open(file, 'r', encoding="utf-8") as urls_file:
+                            urls = json.load(urls_file)
                             indexing_urls.extend(urls['urls'])
 
                 completed_indexing_urls = list()

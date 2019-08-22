@@ -1,5 +1,5 @@
 import functools
-import sys
+import time
 import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
 
@@ -34,6 +34,9 @@ class Extractor:
                 future, task = self.extract(page, url)
                 tasks[future] = task
 
+                if self.config.get_extractor().get_wait_after_request()['enabled']:
+                    time.sleep(self.config.get_extractor().get_wait_after_request()['seconds'])
+
             for future, task in tasks.items():
                 try:
                     future.result()
@@ -50,14 +53,7 @@ class Extractor:
     def extract(self, page, url):
         task = ExtractingTask(url, self.structure_config, self.enums_config, page)
         future = self.session.get(url,
-                                  headers={
-                                      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                                      'Accept-Language': 'cs,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,sk;q=0.6',
-                                      'Accept-Encoding': 'gzip, deflate, br',
-                                      'Cache-Control': 'max-age=0',
-                                      'Connection': 'keep-alive',
-                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
-                                  },
+                                  headers=self.config.get_extractor().get_headers(),
                                   hooks={
                                       'response': functools.partial(task.run),
                                   })

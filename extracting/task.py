@@ -1,6 +1,5 @@
 import traceback
 from contextlib import closing
-from html import unescape
 
 from lxml import html as lxml_html
 from lxml.etree import Element, SubElement
@@ -104,6 +103,11 @@ class ExtractingTask:
             text = self.search_for_value(key, text)
             text = self.replace_parts(key, text)
             text, found = self.replace_enums(key, text)
+
+            text = text.replace("\n", " ")
+            text = text.replace("\r", " ")
+            text = text.replace("\r\n", " ")
+
             return text.strip(), found
         return text, True
 
