@@ -126,6 +126,8 @@ class ExtractingTask:
             match = self.page.get_extractor().get_values_regexps()[key].search(text)
             if match is not None:
                 return match.group(0)
+            else:
+                return ""
         return text
 
     def replace_parts(self, key, string):

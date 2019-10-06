@@ -1,4 +1,5 @@
 from contextlib import closing
+
 from lxml import html as lxml_html
 
 
@@ -25,7 +26,9 @@ class IndexingTask:
 
         self.result = []
         for element in paths['item'](html):
-            self.result.append(self.process_value('link', paths['link'](element)[0]))
+            link = paths['link'](element)
+            if len(link) != 0:
+                self.result.append(self.process_value('link', link[0]))
 
     def process_value(self, key, text):
         if text is not None:
