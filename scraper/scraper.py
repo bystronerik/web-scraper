@@ -12,11 +12,14 @@ from utils import Utils
 
 class Scraper:
 
-    def __init__(self, config):
+    def __init__(self, config, debug):
+        self.debug = debug
         self.pages = {}
-        self.config = ScraperConfig(str(sys.path[0]) + '/configurations/' + config + '/config.json')
-        self.structure_config = StructureConfig(str(sys.path[0]) + '/configurations/' + config + '/structure.json')
-        self.enums_config = EnumsConfig(str(sys.path[0]) + '/configurations/' + config + '/enums.json')
+
+        base_path = str(sys.path[0]) + '/configurations/' + config + '/'
+        self.config = ScraperConfig(base_path + 'config.json', base_path + 'proxies.json')
+        self.structure_config = StructureConfig(base_path + 'structure.json')
+        self.enums_config = EnumsConfig(base_path + 'enums.json')
 
         path = Path(str(sys.path[0]) + '/configurations/' + config + '/pages/')
         for file in path.glob("*.json"):
@@ -39,4 +42,4 @@ class Scraper:
                 task.result()
 
     def create_process(self, data):
-        ScraperProcess(self.config, self.structure_config, self.enums_config, data).run()
+        ScraperProcess(self.config, self.structure_config, self.enums_config, data, self.debug).run()

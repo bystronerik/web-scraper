@@ -10,8 +10,9 @@ from indexing.task import IndexingTask
 
 class Indexer:
 
-    def __init__(self, config):
+    def __init__(self, config, debug):
         self.config = config
+        self.debug = debug
 
         self.session = FuturesSession(executor=ThreadPoolExecutor(max_workers=self.config.get_max_threads()))
 
@@ -38,8 +39,9 @@ class Indexer:
         return results
 
     def index(self, page, url):
-        task = IndexingTask(url, page)
+        task = IndexingTask(self.debug, url, page)
         future = self.session.get(url,
+                                  proxies=self.config.get_proxies_config().get_proxies_for_url(url[0:url.find('/', 8)]),
                                   headers=self.config.get_extractor().get_headers(),
                                   hooks={
                                       'response': functools.partial(task.run),

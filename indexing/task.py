@@ -1,11 +1,14 @@
+import sys
 from contextlib import closing
+from urllib import parse as urllib_parse
 
 from lxml import html as lxml_html
 
 
 class IndexingTask:
 
-    def __init__(self, url, page):
+    def __init__(self, debug, url, page):
+        self.debug = debug
         self.url = url
         self.page = page
 
@@ -19,7 +22,17 @@ class IndexingTask:
                 return
 
             if content_type.find('html') > -1:
-                self.parse(lxml_html.document_fromstring(response.text))
+                try:
+                    html = lxml_html.document_fromstring(response.text)
+                except Exception as e:
+                    html = lxml_html.document_fromstring(response.content)
+
+                if self.debug:
+                    file = open(sys.path[0] + "/debug/" + urllib_parse.quote_plus(self.url) + ".html", "w",
+                                encoding='utf-8')
+                    file.write(lxml_html.tostring(html, encoding='unicode'))
+                    file.close()
+                self.parse(html)
 
     def parse(self, html):
         paths = self.page.get_indexer().get_paths()

@@ -2,5 +2,6 @@
 venv/
 configcreator/
 converter/
+debug/
 chromedriver.exe
 googlescraper.py

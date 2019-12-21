@@ -62,6 +62,8 @@ class PageConfig:
                             completed_indexing_urls.append(replaced_url)
                         else:
                             completed_indexing_urls.append(url)
+                else:
+                    completed_indexing_urls = indexing_urls
                 indexing_urls = completed_indexing_urls
 
                 indexing_paths = {}
@@ -98,7 +100,7 @@ class PageConfig:
                     values_regexps[item] = re.compile(regex)
                 self.extractor_config = PageExtractorConfig(replace_parts, values_regexps, prepend, append, items)
             except Exception as e:
-                print("config error - " + self.id )
+                print("config error - " + self.id)
                 traceback.print_exc()
 
     def get_indexer(self):

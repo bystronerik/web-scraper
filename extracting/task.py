@@ -1,5 +1,7 @@
+import sys
 import traceback
 from contextlib import closing
+from urllib import parse as urllib_parse
 
 from lxml import html as lxml_html
 from lxml.etree import Element, SubElement
@@ -8,9 +10,10 @@ from lxml.html import HtmlElement
 
 class ExtractingTask:
 
-    def __init__(self, url, structure_config, enums_config, page):
+    def __init__(self, debug, url, structure_config, enums_config, page):
+        self.debug = debug
         self.url = url
-        self.base_url = url[0:url.rfind('/')]
+        self.base_url = url[0:url.find('/', 8)]
 
         self.structure_config = structure_config
         self.enums_config = enums_config
@@ -31,6 +34,11 @@ class ExtractingTask:
                 except Exception as e:
                     html = lxml_html.document_fromstring(response.content)
 
+                if self.debug:
+                    file = open(sys.path[0] + "/debug/" + urllib_parse.quote_plus(self.url) + ".html", "w",
+                                encoding='utf-8')
+                    file.write(lxml_html.tostring(html, encoding='unicode'))
+                    file.close()
                 self.parse(html)
 
     def parse(self, html):

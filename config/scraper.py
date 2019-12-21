@@ -1,12 +1,14 @@
 import json
 import os
 import sys
+import traceback
 
 
 class ScraperConfig:
 
-    def __init__(self, config_file):
+    def __init__(self, config_file, proxy_config_file):
         self.config_file = config_file
+        self.proxy_config_file = proxy_config_file
 
         self.max_processes = None
         self.max_threads = None
@@ -14,6 +16,7 @@ class ScraperConfig:
 
         self.indexer_config = None
         self.extractor_config = None
+        self.proxy_config = None
 
         self.load()
 
@@ -37,11 +40,32 @@ class ScraperConfig:
             if not os.path.exists(self.output_directory):
                 os.makedirs(self.output_directory, exist_ok=True)
 
+        if os.path.exists(self.proxy_config_file):
+            if os.path.isfile(self.proxy_config_file):
+                with open(self.proxy_config_file, 'r', encoding="utf-8") as fd:
+                    try:
+                        config = json.load(fd)
+
+                        proxies = {}
+                        for proxy in config['proxies']:
+                            proxies[proxy['base-url']] = proxy['proxies']
+
+                        self.proxy_config = ProxyConfig(proxies)
+                    except Exception as e:
+                        print("proxy config error")
+                        traceback.print_exc()
+                return
+
+        self.proxy_config = ProxyConfig({})
+
     def get_indexer(self):
         return self.indexer_config
 
     def get_extractor(self):
         return self.extractor_config
+
+    def get_proxies_config(self):
+        return self.proxy_config
 
     def get_max_threads(self):
         return self.max_threads
@@ -77,3 +101,17 @@ class ScraperIndexerConfig:
 
     def get_headers(self):
         return self.headers
+
+
+class ProxyConfig:
+
+    def __init__(self, proxies):
+        self.proxies = proxies
+
+    def get_proxies(self):
+        return self.proxies
+
+    def get_proxies_for_url(self, url):
+        if url in self.proxies:
+            return {'http': self.proxies[url][0]}
+        return {}
