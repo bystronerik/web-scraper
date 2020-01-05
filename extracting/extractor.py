@@ -31,6 +31,9 @@ class Extractor:
 
         tasks = {}
         for url in data:
+            if len(url) == 0:
+                continue
+
             future, task = self.extract(page, url)
             tasks[future] = task
 
