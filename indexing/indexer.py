@@ -22,6 +22,9 @@ class Indexer:
 
         tasks = {}
         for url in page.get_indexer().get_urls():
+            if len(url) == 0:
+                continue
+
             future, task = self.index(page, url)
             tasks[future] = task
 
