@@ -1,4 +1,6 @@
 import sys
+import os
+from os import path
 
 from scraper.scraper import Scraper
 
@@ -13,6 +15,9 @@ if __name__ == '__main__':
                 config = args[args.index(arg) + 1]
             if arg == "-d":
                 debug = True
+
+                if not path.exists("debug"):
+                    os.mkdir("debug")
 
     if config is None:
         print('startup.py -c <configuration>')
