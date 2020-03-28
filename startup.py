@@ -17,7 +17,7 @@ if __name__ == '__main__':
                 debug = True
 
                 if not path.exists("debug"):
-                    os.mkdir("debug")
+                    os.mkdir(str(sys.path[0]) + "/debug")
 
     if config is None:
         print('startup.py -c <configuration>')
