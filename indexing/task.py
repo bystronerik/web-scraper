@@ -76,3 +76,22 @@ class IndexingTask:
 
     def get_result(self):
         return self.result
+
+
+class PaginationCheckTask(IndexingTask):
+
+    def parse(self, html):
+        config = self.page.get_indexer().get_pagination_config()
+        paths = config.get_selectors()
+
+        self.result = []
+        if paths["pages-count"] != "":
+            for x in range(config.get_starting_page(), int(paths["pages-count"](html)[0])+1):
+                self.result.append(self.url.replace(str(config.get_starting_page()), str(x)))
+
+        if paths["per-page"] != "" \
+                and paths["items-count"] != "":
+            pass  # TODO
+
+        if paths["next-page"] != "":
+            pass  # TODO
