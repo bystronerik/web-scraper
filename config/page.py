@@ -79,8 +79,21 @@ class PageConfig:
                 values_regexps = {}
                 for item, regex in indexer_config['values-regexps'].items():
                     values_regexps[item] = re.compile(regex)
-                self.indexer_config = PageIndexerConfig(indexer_enabled, replace_parts,
-                                                        values_regexps, prepend, append, indexing_paths, indexing_urls)
+
+                pagination_config = indexer_config['pagination']
+
+                pagination_paths = {}
+                if pagination_config['enabled']:
+                    for item, path in pagination_config['selectors'].items():
+                        try:
+                            pagination_paths[item] = XPath(path)
+                        except Exception as e:
+                            print(e)
+                pagination_config = PaginationConfig(pagination_config['enabled'], pagination_config['starting-page'],
+                                                     pagination_paths)
+
+                self.indexer_config = PageIndexerConfig(indexer_enabled, replace_parts, values_regexps, prepend, append,
+                                                        indexing_paths, indexing_urls, pagination_config)
 
                 extractor_config = config['extractor']
                 items = {}
@@ -141,7 +154,7 @@ class LoginConfig:
 
 class PageIndexerConfig:
 
-    def __init__(self, enabled, replace_parts, values_regexps, prepend, append, paths, urls):
+    def __init__(self, enabled, replace_parts, values_regexps, prepend, append, paths, urls, pagination_config):
         self.enabled = enabled
         self.replace_parts = replace_parts
         self.values_regexps = values_regexps
@@ -149,6 +162,7 @@ class PageIndexerConfig:
         self.append = append
         self.paths = paths
         self.urls = urls
+        self.pagination_config = pagination_config
 
     def is_enabled(self):
         return self.enabled
@@ -170,6 +184,26 @@ class PageIndexerConfig:
 
     def get_values_regexps(self):
         return self.values_regexps
+
+    def get_pagination_config(self):
+        return self.pagination_config
+
+
+class PaginationConfig:
+
+    def __init__(self, enabled, starting_page, selectors):
+        self.enabled = enabled
+        self.starting_page = starting_page
+        self.selectors = selectors
+
+    def is_enabled(self):
+        return self.enabled
+
+    def get_starting_page(self):
+        return self.starting_page
+
+    def get_selectors(self):
+        return self.selectors
 
 
 class PageExtractorConfig:
