@@ -1,3 +1,4 @@
+import logging
 import sys
 from contextlib import closing
 from urllib import parse as urllib_parse
@@ -35,13 +36,16 @@ class IndexingTask:
                 self.parse(html)
 
     def parse(self, html):
-        paths = self.page.get_indexer().get_paths()
+        try:
+            paths = self.page.get_indexer().get_paths()
 
-        self.result = []
-        for element in paths['item'](html):
-            link = paths['link'](element)
-            if len(link) != 0:
-                self.result.append(self.process_value('link', link[0]))
+            self.result = []
+            for element in paths['item'](html):
+                link = paths['link'](element)
+                if len(link) != 0:
+                    self.result.append(self.process_value('link', link[0]))
+        except Exception as e:
+            logging.error("Indexing task failed (" + self.url + ")", exc_info=True)
 
     def process_value(self, key, text):
         if text is not None:
@@ -81,17 +85,20 @@ class IndexingTask:
 class PaginationCheckTask(IndexingTask):
 
     def parse(self, html):
-        config = self.page.get_indexer().get_pagination_config()
-        paths = config.get_selectors()
+        try:
+            config = self.page.get_indexer().get_pagination_config()
+            paths = config.get_selectors()
 
-        self.result = []
-        if paths["pages-count"] != "":
-            for x in range(config.get_starting_page(), int(paths["pages-count"](html)[0])+1):
-                self.result.append(self.url.replace(str(config.get_starting_page()), str(x)))
+            self.result = []
+            if paths["pages-count"] != "":
+                for x in range(config.get_starting_page(), int(paths["pages-count"](html)[0])+1):
+                    self.result.append(self.url.replace(str(config.get_starting_page()), str(x)))
 
-        if paths["per-page"] != "" \
-                and paths["items-count"] != "":
-            pass  # TODO
+            if paths["per-page"] != "" \
+                    and paths["items-count"] != "":
+                pass  # TODO
 
-        if paths["next-page"] != "":
-            pass  # TODO
+            if paths["next-page"] != "":
+                pass  # TODO
+        except Exception as e:
+            logging.error("Indexing task failed (" + self.url + ")", exc_info=True)

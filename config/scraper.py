@@ -1,7 +1,7 @@
 import json
+import logging
 import os
 import sys
-import traceback
 
 
 class ScraperConfig:
@@ -52,8 +52,7 @@ class ScraperConfig:
 
                         self.proxy_config = ProxyConfig(proxies)
                     except Exception as e:
-                        print("proxy config error")
-                        traceback.print_exc()
+                        logging.error("Proxies config error", exc_info=True)
                 return
 
         self.proxy_config = ProxyConfig({})

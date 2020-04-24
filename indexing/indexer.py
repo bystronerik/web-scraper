@@ -1,6 +1,6 @@
 import functools
+import logging
 import time
-import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from requests_futures.sessions import FuturesSession
@@ -44,8 +44,7 @@ class Indexer:
                         future.result()
                         urls.extend(task.get_result())
                     except Exception as e:
-                        print('indexing error - ' + str(e))
-                        traceback.print_exc()
+                        logging.error("Indexing failed", exc_info=True)
         tasks = {}
         for url in urls:
             if len(url) == 0:
@@ -62,8 +61,7 @@ class Indexer:
                 future.result()
                 results.extend(task.get_result())
             except Exception as e:
-                print('indexing error - ' + str(e))
-                traceback.print_exc()
+                logging.error("Indexing failed", exc_info=True)
 
         return results
 

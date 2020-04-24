@@ -1,5 +1,5 @@
+import logging
 import sys
-import traceback
 from contextlib import closing
 from urllib import parse as urllib_parse
 
@@ -42,13 +42,13 @@ class ExtractingTask:
                 self.parse(html)
 
     def parse(self, html):
-        root = self.structure_config.get_structure()['root']
-        xml = Element(root['xml-tag'])
         try:
+            root = self.structure_config.get_structure()['root']
+            xml = Element(root['xml-tag'])
             self.read(html, xml, list(root['childs'])[0], root['childs'][list(root['childs'])[0]])
             self.xml = xml
         except Exception as e:
-            traceback.print_exc()
+            logging.error("Extracting task failed (" + self.url + ")", exc_info=True)
 
     def read(self, html, xml, key, data):
         try:
@@ -102,7 +102,7 @@ class ExtractingTask:
                     if not found:
                         element.set("found", "false")
         except Exception as e:
-            traceback.print_exc()
+            logging.error("Extracting task failed (" + self.url + ")", exc_info=True)
 
     def process_text(self, key, text):
         if text is not None:

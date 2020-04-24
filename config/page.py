@@ -1,7 +1,7 @@
 import json
+import logging
 import re
 import sys
-import traceback
 from urllib import parse as urllib_parse
 
 from lxml.etree import XPath
@@ -113,8 +113,7 @@ class PageConfig:
                     values_regexps[item] = re.compile(regex)
                 self.extractor_config = PageExtractorConfig(replace_parts, values_regexps, prepend, append, items)
             except Exception as e:
-                print("config error - " + self.id)
-                traceback.print_exc()
+                logging.error("Page config error (" + self.id + ")", exc_info=True)
 
     def get_indexer(self):
         return self.indexer_config

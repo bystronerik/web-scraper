@@ -1,6 +1,6 @@
 import functools
+import logging
 import time
-import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from lxml import etree
@@ -18,10 +18,7 @@ class Extractor:
         self.structure_config = structure_config
         self.enums_config = enums_config
 
-        try:
-            self.session = FuturesSession(executor=ThreadPoolExecutor(max_workers=self.config.get_max_threads()))
-        except Exception as e:
-            traceback.print_exc()
+        self.session = FuturesSession(executor=ThreadPoolExecutor(max_workers=self.config.get_max_threads()))
 
     def start(self, page, data):
         self.session.cookies = page.get_cookie_jar()
@@ -49,8 +46,7 @@ class Extractor:
                         for item in task.get_xml():
                             root.append(item)
                     except Exception as e:
-                        print('extractor error - ' + str(e))
-                        traceback.print_exc()
+                        logging.error("Extracting failed", exc_info=True)
 
         for future, task in tasks.items():
             try:
@@ -59,8 +55,7 @@ class Extractor:
                 for item in task.get_xml():
                     root.append(item)
             except Exception as e:
-                print('extractor error - ' + str(e))
-                traceback.print_exc()
+                logging.error("Extracting failed", exc_info=True)
 
         xml = ElementTree(root)
         with open(self.config.get_output_directory() + page.get_id() + '.xml', 'wb') as f:

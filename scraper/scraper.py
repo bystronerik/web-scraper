@@ -12,7 +12,7 @@ from utils import Utils
 
 class Scraper:
 
-    def __init__(self, config, debug):
+    def __init__(self, config, debug, pages=None):
         self.debug = debug
         self.pages = {}
 
@@ -27,6 +27,10 @@ class Scraper:
 
             if page_id == "example":
                 continue
+
+            if pages is not None:
+                if page_id not in pages:
+                    continue
 
             self.pages[page_id] = file
 
