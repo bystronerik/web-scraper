@@ -37,13 +37,15 @@ if __name__ == '__main__':
 
     if not path.exists("logs"):
         os.mkdir(str(sys.path[0]) + "/logs")
+    if not path.exists("logs/" + config):
+        os.mkdir(str(sys.path[0]) + "/logs/" + config)
     logging.basicConfig(format='[%(asctime)s][%(levelname)s]: %(message)s',  datefmt='%d/%m/%Y %H:%M:%S',
                         level=loggingLevel, filename="logs/" + datetime.now().strftime("%d-%m-%Y-%H:%M:%S") + '.log')
 
     logFormatter = logging.Formatter('[%(asctime)s][%(levelname)s]: %(message)s', '%d/%m/%Y %H:%M:%S')
     rootLogger = logging.getLogger()
 
-    fileHandler = logging.FileHandler("logs/" + datetime.now().strftime("%d-%m-%Y-%H:%M:%S") + '.log')
+    fileHandler = logging.FileHandler("logs/" + config + "/" + datetime.now().strftime("%d-%m-%Y-%H:%M:%S") + '.log')
     fileHandler.setFormatter(logFormatter)
     rootLogger.addHandler(fileHandler)
 
