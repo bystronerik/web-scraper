@@ -93,8 +93,8 @@ class PaginationCheckTask(IndexingTask):
             self.result = []
             if paths["pages-count"] is not None:
                 for x in range(config.get_starting_page(), int(paths["pages-count"](html)[0])+1):
-                    self.result.append(self.url.replace(str(config.get_starting_page()*config.get_offset_per_page()),
-                                                        str(x)))
+                    self.result.append(self.url.replace(str(config.get_starting_page()),
+                                                        str(x*config.get_offset_per_page())))
 
             if paths["per-page"] is not None \
                     and paths["items-count"] is not None:
