@@ -16,6 +16,7 @@ class IndexingTask:
         self.result = None
 
     def run(self, response, *args, **kwargs):
+        logging.info("Running indexing task (" + self.url + ")")
         with closing(response) as response:
             content_type = response.headers['Content-Type'].lower()
 
