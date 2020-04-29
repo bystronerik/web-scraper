@@ -24,9 +24,9 @@ class Indexer:
         if page.get_indexer().get_pagination_config().is_enabled():
             pagination_config = page.get_indexer().get_pagination_config()
             if pagination_config.get_selectors()["pages-count"] is not None\
-                    and pagination_config.get_selectors()["per-page"] is not None \
-                    and pagination_config.get_selectors()["items-count"] is not None\
-                    and pagination_config.get_selectors()["next-page"] is not None:
+                    or pagination_config.get_selectors()["per-page"] is not None \
+                    or pagination_config.get_selectors()["items-count"] is not None\
+                    or pagination_config.get_selectors()["next-page"] is not None:
                 tasks = {}
                 for url in page.get_indexer().get_urls():
                     if len(url) == 0:
