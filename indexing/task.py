@@ -90,16 +90,16 @@ class PaginationCheckTask(IndexingTask):
             paths = config.get_selectors()
 
             self.result = []
-            if paths["pages-count"] != "":
+            if paths["pages-count"] is not None:
                 for x in range(config.get_starting_page(), int(paths["pages-count"](html)[0])+1):
                     self.result.append(self.url.replace(str(config.get_starting_page()*config.get_offset_per_page()),
                                                         str(x)))
 
-            if paths["per-page"] != "" \
-                    and paths["items-count"] != "":
+            if paths["per-page"] is not None \
+                    and paths["items-count"] is not None:
                 pass  # TODO
 
-            if paths["next-page"] != "":
+            if paths["next-page"] is not None:
                 pass  # TODO
         except Exception as e:
             logging.error("Indexing task failed (" + self.url + ")", exc_info=True)

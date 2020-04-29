@@ -88,7 +88,7 @@ class PageConfig:
                         try:
                             pagination_paths[item] = XPath(path)
                         except Exception as e:
-                            print(e)
+                            pagination_paths[item] = None
                 pagination_config = PaginationConfig(pagination_config['enabled'], pagination_config['starting-page'],
                                                      pagination_config['offset-per-page'], pagination_paths)
 
