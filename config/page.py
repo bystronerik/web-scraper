@@ -90,7 +90,7 @@ class PageConfig:
                         except Exception as e:
                             print(e)
                 pagination_config = PaginationConfig(pagination_config['enabled'], pagination_config['starting-page'],
-                                                     pagination_paths)
+                                                     pagination_config['offset-per-page'], pagination_paths)
 
                 self.indexer_config = PageIndexerConfig(indexer_enabled, replace_parts, values_regexps, prepend, append,
                                                         indexing_paths, indexing_urls, pagination_config)
@@ -190,9 +190,10 @@ class PageIndexerConfig:
 
 class PaginationConfig:
 
-    def __init__(self, enabled, starting_page, selectors):
+    def __init__(self, enabled, starting_page, offset_per_page, selectors):
         self.enabled = enabled
         self.starting_page = starting_page
+        self.offset_per_page = offset_per_page
         self.selectors = selectors
 
     def is_enabled(self):
@@ -200,6 +201,9 @@ class PaginationConfig:
 
     def get_starting_page(self):
         return self.starting_page
+
+    def get_offset_per_page(self):
+        return self.offset_per_page
 
     def get_selectors(self):
         return self.selectors
