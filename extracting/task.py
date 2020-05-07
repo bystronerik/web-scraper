@@ -1,8 +1,10 @@
+import base64
 import logging
 import sys
 from contextlib import closing
 from urllib import parse as urllib_parse
 
+import requests
 from lxml import html as lxml_html
 from lxml.etree import Element, SubElement
 from lxml.html import HtmlElement
@@ -96,7 +98,11 @@ class ExtractingTask:
                         self.read(html_element, element, key, child)
                 else:
                     if isinstance(html_element, HtmlElement):
-                        text, found = self.process_text(key, html_element.text)
+                        if html_element.tag == "img":
+                            text, found = self.process_text(key, html_element.get("src"))
+                            text = base64.b64encode(requests.get(text).content)
+                        else:
+                            text, found = self.process_text(key, html_element.text)
                     else:
                         text, found = self.process_text(key, html_element)
                     element.text = text
