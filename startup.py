@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from os import path
 
+from logger.handlers import StatusLogsHandler
 from scraper.scraper import Scraper
 
 if __name__ == '__main__':
@@ -48,6 +49,10 @@ if __name__ == '__main__':
     consoleHandler = logging.StreamHandler(sys.stdout)
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
+
+    statusLogsHandler = StatusLogsHandler(config)
+    statusLogsHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(statusLogsHandler)
 
     logging.info("System init")
     try:
