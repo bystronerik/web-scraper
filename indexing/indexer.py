@@ -69,7 +69,7 @@ class Indexer:
         task = IndexingTask(self.debug, url, page)
         future = self.session.get(url,
                                   proxies=self.config.get_proxies_config().get_proxies_for_url(url[0:url.find('/', 8)]),
-                                  headers=self.config.get_extractor().get_headers(),
+                                  headers=self.config.get_indexer().get_headers(),
                                   hooks={
                                       'response': functools.partial(task.run),
                                   })
@@ -79,7 +79,7 @@ class Indexer:
         task = PaginationCheckTask(self.debug, url, page)
         future = self.session.get(url,
                                   proxies=self.config.get_proxies_config().get_proxies_for_url(url[0:url.find('/', 8)]),
-                                  headers=self.config.get_extractor().get_headers(),
+                                  headers=self.config.get_indexer().get_headers(),
                                   hooks={
                                       'response': functools.partial(task.run),
                                   })
